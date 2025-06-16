@@ -10,6 +10,7 @@ city = os.getenv("TARGET_CITY")
 forecast_days = os.getenv("FORECAST_DAYS")
 api_url = "https://api.weatherapi.com/v1/forecast.json"
 
+print("Enviroment variables:",city,forecast_days)
 params = {
     "key":api_key,
     "q":city,
