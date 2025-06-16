@@ -1,8 +1,9 @@
-import requests
 import os
 from dotenv import load_dotenv
 import logging
 import pandas as pd
+from extract import extract_data
+from transform import transform_data
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 load_dotenv()
@@ -19,42 +20,7 @@ if city:
 else:
     logging.warning("The enviroment variables weren't loaded")
 
-params = {
-    "key":api_key,
-    "q":city,
-    "days":forecast_days,
-    "alerts":"no",
-    "aqi":"no"
-}
-
-# Request to get the forecast from the weather API
-forecast_response = requests.get(url=api_url,params=params)
-forecast_array = forecast_response.json()["forecast"]["forecastday"]
-
-# Normalizing the JSON, we only need the hourly records for our DB
-df_hourly_forecast = pd.json_normalize(
-    data=forecast_array,
-    record_path='hour',
-)
-
-# Selecting only columns with international measures and applicable to Venezuela
-columns_to_select_from_raw_output = [
-    'time_epoch', 'time', 'temp_c',
-    'is_day', 'wind_kph', 'wind_degree', 'wind_dir',
-    'pressure_mb', 'precip_mm', 'will_it_rain', 'chance_of_rain',
-    'vis_km', 'uv', 'humidity', 'cloud',
-    'feelslike_c', 'windchill_c', 'heatindex_c', 'dewpoint_c',
-    'gust_kph', 'condition.text', 'condition.code'
-]
-
-# Cleaning the data
-df_hourly_forecast = df_hourly_forecast[columns_to_select_from_raw_output]
-
-# Renaming the 
-rename_map = {
-    'condition.text': 'condition_text',
-    'condition.code': 'condition_code',
-}
-df_hourly_forecast = df_hourly_forecast.rename(columns=rename_map)
+df_hourly_forecast = extract_data(api_key,city,forecast_days,api_url)
+df_hourly_forecast = transform_data(df_hourly_forecast)
 
 df_hourly_forecast.info()
