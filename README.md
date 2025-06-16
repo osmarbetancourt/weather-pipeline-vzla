@@ -1,6 +1,6 @@
 # Weather Data Pipeline - Venezuela
 
-A complete ETL (Extract, Transform, Load) pipeline focused on forecasted weather data. This project leverages Python to fetch hourly weather predictions (from from [WeatherAPI.com](https://www.weatherapi.com/)) for a target city (like Caracas, Venezuela) from an external API, processes the raw data, and efficiently stores it within a Dockerized PostgreSQL database, making the data readily available for analysis.
+A complete ETL (Extract, Transform, Load) pipeline focused on forecasted weather data. This project leverages Python to fetch hourly weather predictions (from [WeatherAPI.com](https://www.weatherapi.com/)) for a target city (like Caracas, Venezuela) from an external API, processes the raw data, and efficiently stores it within a Dockerized PostgreSQL database, making the data readily available for analysis.
 
 ---
 
