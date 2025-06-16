@@ -4,6 +4,7 @@ import logging
 import pandas as pd
 from extract import extract_data
 from transform import transform_data
+from load import load_data
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 load_dotenv()
@@ -22,5 +23,4 @@ else:
 
 df_hourly_forecast = extract_data(api_key,city,forecast_days,api_url)
 df_hourly_forecast = transform_data(df_hourly_forecast)
-
-df_hourly_forecast.info()
+load_data(df=df_hourly_forecast,table_name="hourly_weather_forecast")
