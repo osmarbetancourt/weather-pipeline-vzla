@@ -31,7 +31,7 @@ Follow these steps to get the project up and running on your local machine.
 First, clone this GitHub repository to your local machine:
 
 ```bash
-git clone [https://github.com/osmarbetancourt/weather-pipeline-vzla.git](https://github.com/osmarbetancourt/weather-pipeline-vzla.git)
+git clone https://github.com/osmarbetancourt/weather-pipeline-vzla.git
 cd weather-pipeline-vzla
 ```
 
@@ -43,3 +43,33 @@ To fetch weather data, you'll need a free API key from WeatherAPI.com:
 2.  Sign up for a free account.
 3.  Once registered and logged in, navigate to your **[My Account](https://www.weatherapi.com/my/)** dashboard.
 4.  Your default API key should be visible there. **Copy this key.**
+
+### 3. Configure Environment Variables in `.env`
+
+For security reasons, sensitive information like API keys are stored in a `.env` file, which is kept out of version control (`.gitignore` prevents it from being committed).
+
+1.  In the **root directory** of your cloned project (the `weather-pipeline-vzla/` directory, where `docker-compose.yml` is located), create a new file named `.env`:
+
+    ```bash
+    touch .env
+    ```
+
+2.  Open the newly created `.env` file and add the following lines. **Replace `YOUR_ACTUAL_WEATHERAPI_KEY_HERE` with the API key you obtained in the previous step.**
+
+    ```ini
+    WEATHER_API_KEY="YOUR_ACTUAL_WEATHERAPI_KEY_HERE"
+    TARGET_CITY="Caracas"
+    ```
+
+    * **`WEATHER_API_KEY`**: This variable will hold your unique API key from WeatherAPI.com.
+    * **`TARGET_CITY`**: This variable specifies the city for which you want to fetch weather data. You can change `Caracas` to any other city (e.g., `Maracaibo`, `Valencia`). The Python script is currently configured to look for tomorrow's forecast for this city.
+
+### 4. Run the Pipeline with Docker Compose
+
+With your `.env` file configured, you can now run the Python script within its Dockerized environment:
+
+From the root directory of your project, execute the following command:
+
+```bash
+docker-compose up --build
+```
