@@ -93,9 +93,12 @@ docker-compose up --build
 ```
 weather-pipeline-vzla/
 ├── app/
-│   ├── main.py             # Python script for weather data extraction
-│   ├── requirements.txt    # Python dependencies (e.g., requests)
-│   └── Dockerfile          # Defines how to build the Python app's Docker image
+│   ├── init.py       # Marks 'app' as a Python package, enabling module imports.
+│   ├── main.py           # The main entry point and orchestrator for the ETL pipeline.
+│   ├── extract.py        # Contains functions for extracting raw weather data from the API.
+│   ├── transform.py      # Contains functions for transforming and cleaning the extracted data.
+│   ├── requirements.txt  # Lists Python dependencies (e.g., requests, pandas).
+│   └── Dockerfile        # Defines how to build the Docker image for the Python application.
 ├── docker-compose.yml      # Orchestrates the Docker services (currently just the app)
 ├── .env                    # Stores sensitive environment variables (not committed to Git)
 ├── .gitignore              # Ensures .env is not committed
