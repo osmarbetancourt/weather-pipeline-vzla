@@ -1,14 +1,12 @@
 # Weather Data Pipeline - Venezuela
 
-A complete ETL (Extract, Transform, Load) pipeline focused on forecasted weather data. This project leverages Python to fetch hourly weather predictions for a target city (like Caracas, Venezuela) from an external API, processes the raw data, and efficiently stores it within a Dockerized PostgreSQL database, making the data readily available for analysis.
-
-**Current Stage:** **Load (L)** - The pipeline is currently configured to load the weather forecast data from [WeatherAPI.com](https://www.weatherapi.com/) into a DB.
+A complete ETL (Extract, Transform, Load) pipeline focused on forecasted weather data. This project leverages Python to fetch hourly weather predictions (from from [WeatherAPI.com](https://www.weatherapi.com/)) for a target city (like Caracas, Venezuela) from an external API, processes the raw data, and efficiently stores it within a Dockerized PostgreSQL database, making the data readily available for analysis.
 
 ---
 
 ## Table of Contents
 
-* [Features (Current)](#features-current)
+* [Features](#features-current)
 * [Prerequisites](#prerequisites)
 * [Getting Started](#getting-started)
     * [1. Clone the Repository](#1-clone-the-repository)
@@ -75,10 +73,24 @@ For security reasons, sensitive information like API keys are stored in a `.env`
     ```ini
     WEATHER_API_KEY="YOUR_ACTUAL_WEATHERAPI_KEY_HERE"
     TARGET_CITY="Caracas"
+    FORECAST_DAYS=8
+
+    # PostgreSQL Database Configuration
+    PG_HOST="db" # Use 'db' as the hostname when running within Docker Compose
+    PG_PORT=5432
+    PG_DB="weather_db"
+    PG_USER="db_user"
+    PG_PASSWORD="db_pass"
     ```
 
-    * **`WEATHER_API_KEY`**: This variable will hold your unique API key from WeatherAPI.com.
-    * **`TARGET_CITY`**: This variable specifies the city for which you want to fetch weather data. You can change `Caracas` to any other city (e.g., `Maracaibo`, `Valencia`). The Python script is currently configured to look for tomorrow's forecast for this city.
+* **`WEATHER_API_KEY`**: This variable will hold your unique API key from WeatherAPI.com.
+* **`TARGET_CITY`**: This variable specifies the city for which you want to fetch weather data. You can change `Caracas` to any other city (e.g., `Maracaibo`, `Valencia`).
+* **`FORECAST_DAYS`**: Defines how many days of future forecast data to retrieve (e.g., `1` for tomorrow's forecast).
+* **`PG_HOST`**: The hostname for the PostgreSQL database. Inside Docker Compose, this should be `db` (the service name of your database container).
+* **`PG_PORT`**: The port on which PostgreSQL is listening. The default is `5432`.
+* **`PG_DB`**: The name of the database to connect to.
+* **`PG_USER`**: The username for connecting to the database.
+* **`PG_PASSWORD`**: The password for the database user.
 
 ### 4. Run the Pipeline with Docker Compose
 
@@ -95,7 +107,7 @@ docker-compose up --build
 ```
 weather-pipeline-vzla/
 ├── app/
-│   ├── init.py       # Marks 'app' as a Python package, enabling module imports.
+│   ├── __init__.py       # Marks 'app' as a Python package, enabling module imports.
 │   ├── main.py           # The main entry point and orchestrator for the ETL pipeline.
 │   ├── extract.py        # Contains functions for extracting raw weather data from the API.
 │   ├── transform.py      # Contains functions for transforming and cleaning the extracted data.
@@ -107,4 +119,17 @@ weather-pipeline-vzla/
 ├── .gitignore            # Specifies files and directories that Git should ignore (e.g., .env, pycache).
 └── README.md             # This project's README file, providing an overview and instructions.
 ```
+---
+
+## Next Steps
+
+Here are some potential enhancements and future considerations for this project:
+
+* **Scheduling:** Implement a scheduler (e.g., using Cron, Airflow, or a Docker-native scheduling tool) to automate the daily execution of the pipeline.
+* **Data Analysis & Visualization:** Connect a business intelligence (BI) tool (e.g., Grafana, Metabase, Tableau) or create Python scripts to analyze and visualize the stored weather data.
+* **Error Handling & Monitoring:** Enhance error handling, add logging to external services, and set up monitoring for pipeline health.
+* **Additional Data Sources:** Integrate data from other weather APIs or sources to enrich the dataset.
+* **Data Deduplication/Upsert:** Implement more sophisticated logic for handling duplicate entries or updating existing records based on unique keys, instead of just appending.
+* **Unit & Integration Tests:** Add comprehensive tests to ensure the reliability and correctness of the extraction, transformation, and loading processes.
+
 ---
