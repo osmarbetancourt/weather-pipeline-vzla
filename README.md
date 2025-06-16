@@ -6,6 +6,20 @@ This project is a foundational data engineering pipeline designed to extract, tr
 
 ---
 
+## Table of Contents
+
+* [Features (Current)](#features-current)
+* [Prerequisites](#prerequisites)
+* [Getting Started](#getting-started)
+    * [1. Clone the Repository](#1-clone-the-repository)
+    * [2. Obtain Your WeatherAPI.com API Key](#2-obtain-your-weatherapicom-api-key)
+    * [3. Configure Environment Variables in .env](#3-configure-environment-variables-in-env)
+    * [4. Run the Pipeline with Docker Compose](#4-run-the-pipeline-with-docker-compose)
+* [Project Structure (Relevant Files)](#project-structure-relevant-files)
+* [Next Steps](#next-steps)
+
+---
+
 ## Features (Current)
 
 * **Containerized Environment:** Uses Docker and Docker Compose for a consistent and isolated development/execution environment.
