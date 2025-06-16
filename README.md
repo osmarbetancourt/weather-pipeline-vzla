@@ -1,8 +1,8 @@
 # Weather Data Pipeline - Venezuela
 
-This project is a foundational data engineering pipeline designed to extract, transform, and load (ETL) weather data for a specified city in Venezuela (defaulting to Caracas). It leverages Docker and Docker Compose for environment management, ensuring reproducibility and easy setup.
+A complete ETL (Extract, Transform, Load) pipeline focused on forecasted weather data. This project leverages Python to fetch hourly weather predictions for a target city (like Caracas, Venezuela) from an external API, processes the raw data, and efficiently stores it within a Dockerized PostgreSQL database, making the data readily available for analysis.
 
-**Current Stage:** **Extract (E)** - The pipeline is currently configured to fetch weather forecast data from [WeatherAPI.com](https://www.weatherapi.com/).
+**Current Stage:** **Load (L)** - The pipeline is currently configured to load the weather forecast data from [WeatherAPI.com](https://www.weatherapi.com/) into a DB.
 
 ---
 
@@ -20,11 +20,13 @@ This project is a foundational data engineering pipeline designed to extract, tr
 
 ---
 
-## Features (Current)
+## Features
 
-* **Containerized Environment:** Uses Docker and Docker Compose for a consistent and isolated development/execution environment.
-* **API Data Extraction:** Connects to the WeatherAPI.com forecast endpoint to retrieve up-to-date weather information.
-* **Secure Configuration:** Utilizes `.env` files to manage sensitive API keys and configurable parameters, keeping them out of source control.
+* **Containerized Environment:** Leverages Docker and Docker Compose for a consistent, isolated, and easily reproducible development and execution environment.
+* **Targeted Hourly Forecasts:** Connects to the WeatherAPI.com forecast endpoint to extract detailed hourly weather information for specific cities.
+* **Automated Data Transformation:** Processes and cleans raw API responses into a structured, tabular format suitable for database storage.
+* **PostgreSQL Data Loading:** Efficiently loads transformed data into a PostgreSQL database using SQLAlchemy and Pandas, including built-in retry mechanisms to ensure successful connections even if the database isn't immediately available on startup.
+* **Secure Configuration:** Utilizes `.env` files to manage sensitive API keys and configurable parameters, keeping them secure and out of version control.
 
 ---
 
@@ -97,11 +99,12 @@ weather-pipeline-vzla/
 │   ├── main.py           # The main entry point and orchestrator for the ETL pipeline.
 │   ├── extract.py        # Contains functions for extracting raw weather data from the API.
 │   ├── transform.py      # Contains functions for transforming and cleaning the extracted data.
-│   ├── requirements.txt  # Lists Python dependencies (e.g., requests, pandas).
+│   ├── load.py           # Handles database connection, table creation, and data loading into PostgreSQL.
+│   ├── requirements.txt  # Lists Python dependencies (e.g., requests, pandas, sqlalchemy, psycopg2-binary).
 │   └── Dockerfile        # Defines how to build the Docker image for the Python application.
-├── docker-compose.yml      # Orchestrates the Docker services (currently just the app)
-├── .env                    # Stores sensitive environment variables (not committed to Git)
-├── .gitignore              # Ensures .env is not committed
-└── README.md               # This file
+├── docker-compose.yml    # Orchestrates Docker services, defining the application's environment.
+├── .env                  # Stores sensitive environment variables (API keys, city, DB credentials) and is excluded from Git.
+├── .gitignore            # Specifies files and directories that Git should ignore (e.g., .env, pycache).
+└── README.md             # This project's README file, providing an overview and instructions.
 ```
 ---
