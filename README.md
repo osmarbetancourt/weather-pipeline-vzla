@@ -89,8 +89,6 @@ For security reasons, sensitive information like API keys are stored in a `.env`
 * **`WEATHER_API_KEY`**: This variable will hold your unique API key from WeatherAPI.com.
 * **`TARGET_CITY`**: This variable specifies the city for which you want to fetch weather data. You can change `Caracas` to any other city (e.g., `Maracaibo`, `Valencia`).
 * **`FORECAST_DAYS`**: Defines how many days of future forecast data to retrieve (e.g., `1` for tomorrow's forecast).
-* **`PG_HOST`**: The hostname for the PostgreSQL database. Inside Docker Compose, this should be `db` (the service name of your database container).
-* **`PG_PORT`**: The port on which PostgreSQL is listening. The default is `5432`.
 * **`PG_DB`**: The name of the database to connect to.
 * **`PG_USER`**: The username for connecting to the database.
 * **`PG_PASSWORD`**: The password for the database user.
@@ -179,7 +177,7 @@ GROUP BY
 ORDER BY
     "Hour of Day" ASC;
 ```
-<img src="https://ibb.co/SkCcySn" alt="Average Hourly Temperature Cycle" style="max-width: 100%; height: auto;">
+<img src="https://i.ibb.co/RXwNb80/Screenshot-2025-06-16-031356.png" alt="Average Hourly Temperature Cycle" style="max-width: 100%; height: auto;">
 
 #### 2. Average Daily Humidity
 
@@ -219,7 +217,7 @@ GROUP BY
 ORDER BY
     CAST(time AS DATE) ASC;
 ```
-<img src="https://ibb.co/przD7gf5" alt="Average Daily Humidity" style="max-width: 100%; height: auto;">
+<img src="https://i.ibb.co/k68n7p4v/Screenshot-2025-06-16-033822.png" alt="Average Daily Humidity" style="max-width: 100%; height: auto;">
 
 #### 3. Daily Weather Averages Overview
 
@@ -255,7 +253,7 @@ GROUP BY
 ORDER BY
     CAST(time AS DATE) ASC;
 ```
-<img src="https://ibb.co/cSM3RzBQ" alt="Daily Weather Averages Overview" style="max-width: 100%; height: auto;">
+<img src="https://i.ibb.co/W4q57Shf/Screenshot-2025-06-16-035106.png" alt="Daily Weather Averages Overview" style="max-width: 100%; height: auto;">
 
 ---
 
@@ -281,7 +279,7 @@ All individual charts have been combined into a single, interactive dashboard in
 6.  **Save the Dashboard:**
     * When you're satisfied with the layout, click the **"Done editing"** button (usually in the top right corner of the dashboard).
 
-<img src="https://ibb.co/YFCzXgJk" alt="Comprehensive Weather Dashboard" style="max-width: 100%; height: auto;"/>
+<img src="https://i.ibb.co/TxfV1yJ8/Screenshot-2025-06-16-035636.png" alt="Comprehensive Weather Dashboard" style="max-width: 100%; height: auto;"/>
 
 ## Next Steps
 
