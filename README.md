@@ -87,3 +87,18 @@ From the root directory of your project, execute the following command:
 ```bash
 docker-compose up --build
 ```
+
+## Project Structure (Relevant Files)
+
+```
+weather-pipeline-vzla/
+├── app/
+│   ├── main.py             # Python script for weather data extraction
+│   ├── requirements.txt    # Python dependencies (e.g., requests)
+│   └── Dockerfile          # Defines how to build the Python app's Docker image
+├── docker-compose.yml      # Orchestrates the Docker services (currently just the app)
+├── .env                    # Stores sensitive environment variables (not committed to Git)
+├── .gitignore              # Ensures .env is not committed
+└── README.md               # This file
+```
+---
