@@ -14,6 +14,11 @@ A complete ETL (Extract, Transform, Load) pipeline focused on forecasted weather
     * [3. Configure Environment Variables in .env](#3-configure-environment-variables-in-env)
     * [4. Run the Pipeline with Docker Compose](#4-run-the-pipeline-with-docker-compose)
 * [Project Structure (Relevant Files)](#project-structure-relevant-files)
+* [Business Intelligence & Data Visualization (Metabase)](#business-intelligence--data-visualization-metabase)
+    * [1. Average Hourly Temperature Cycle](#1-average-hourly-temperature-cycle)
+    * [2. Average Daily Humidity](#2-average-daily-humidity)
+    * [3. Daily Weather Averages Overview](#3-daily-weather-averages-overview)
+    * [Comprehensive Weather Dashboard](#comprehensive-weather-dashboard)
 * [Next Steps](#next-steps)
 
 ---
@@ -76,8 +81,6 @@ For security reasons, sensitive information like API keys are stored in a `.env`
     FORECAST_DAYS=8
 
     # PostgreSQL Database Configuration
-    PG_HOST="db" # Use 'db' as the hostname when running within Docker Compose
-    PG_PORT=5432
     PG_DB="weather_db"
     PG_USER="db_user"
     PG_PASSWORD="db_pass"
@@ -121,12 +124,170 @@ weather-pipeline-vzla/
 ```
 ---
 
+## Business Intelligence & Data Visualization (Metabase)
+
+After the data is successfully extracted, transformed, and loaded into the PostgreSQL database, **Metabase** is used as the Business Intelligence (BI) tool to explore, analyze, and visualize the weather forecast data. Metabase provides an intuitive, browser-based interface for creating interactive dashboards and answering business questions without requiring deep SQL knowledge (though SQL can be used for advanced queries).
+
+### Accessing Metabase
+
+Once all Docker services are running, you can access the Metabase interface in your web browser:
+
+[http://localhost:3000](http://localhost:3000)
+
+Upon first access, you'll be guided through a quick setup process to create an admin user and connect to your PostgreSQL database (using `db` as the host, `5432` as the port, and your configured database name, username, and password from your `.env` file).
+
+### Data Exploration & Example Dashboards
+
+Metabase connects directly to the `hourly_weather_forecast` table in the PostgreSQL database, allowing users to build custom "Questions" (queries/charts) and organize them into comprehensive "Dashboards". Below are examples of key insights derived from the weather data for **Caracas**:
+
+---
+
+#### 1. Average Hourly Temperature Cycle
+
+This visualization reveals the typical temperature pattern over a 24-hour cycle, averaged across all forecasted days. It helps in understanding the daily temperature fluctuations and identifying peak heat or cooler periods.
+
+**How to create this chart in Metabase:**
+
+1.  **Access Metabase:** Open your web browser and go to `http://localhost:3000`.
+2.  **Start a New Native Query:**
+    * From the Metabase homepage, click the **"+" icon** in the top right corner.
+    * Select **"New question"**.
+    * Choose **"Native query"**.
+    * From the database dropdown, select your **"Weather DB"** (or whatever name you gave your PostgreSQL connection).
+3.  **Paste and Run SQL:**
+    * Copy the SQL query provided below and paste it into the Native Query editor.
+    * Click the **"Visualize"** button in the bottom left to run the query.
+4.  **Configure Chart Type and Settings:**
+    * After the query runs, you'll see the results as a table. In the bottom left, click the **"Table"** button and select **"Line chart"**.
+    * In the **Chart Settings panel** (the paint roller icon on the right sidebar):
+        * For the **X-axis**, select `"Hour of Day"`.
+        * For the **Y-axis**, select `"Average Temperature Celsius"`.
+        * Optionally, add a Chart title like "Average Hourly Temperature Cycle".
+5.  **Save Your Question:**
+    * Click **"Save"** in the top right.
+    * Give it a name (e.g., "Average Hourly Temperature Cycle (SQL)") and choose a collection (e.g., "Weather Dashboard Examples").
+
+**SQL Query:**
+```sql
+SELECT
+    EXTRACT(HOUR FROM CAST(time AS TIMESTAMP)) AS "Hour of Day",
+    AVG(temp_c) AS "Average Temperature Celsius"
+FROM
+    hourly_weather_forecast
+GROUP BY
+    "Hour of Day"
+ORDER BY
+    "Hour of Day" ASC;
+```
+<img src="https://ibb.co/SkCcySn" alt="Average Hourly Temperature Cycle" style="max-width: 100%; height: auto;">
+
+#### 2. Average Daily Humidity
+
+This visualization shows the average humidity for each day across the forecast period. It's useful for understanding how humidity levels typically vary and can indicate general comfort levels.
+
+**How to create this chart in Metabase:**
+
+1.  **Access Metabase:** Open your web browser and go to `http://localhost:3000`.
+2.  **Start a New Native Query:**
+    * From the Metabase homepage, click the **"+" icon** in the top right corner.
+    * Select **"New question"**.
+    * Choose **"Native query"**.
+    * From the database dropdown, select your **"Weather DB"** (or whatever name you gave your PostgreSQL connection).
+3.  **Paste and Run SQL:**
+    * Copy the SQL query provided below and paste it into the Native Query editor.
+    * Click the **"Visualize"** button in the bottom left to run the query.
+4.  **Configure Chart Type and Settings:**
+    * After the query runs, you'll see the results as a table. In the bottom left, click the **"Table"** button and select **"Bar chart"**.
+    * In the **Chart Settings panel** (the paint roller icon on the right sidebar):
+        * For the **X-axis**, select `"Forecast Date"`.
+        * For the **Y-axis**, select `"Average Humidity"`.
+        * Optionally, add a Chart title like "Average Daily Humidity".
+5.  **Save Your Question:**
+    * Click **"Save"** in the top right.
+    * Give it a name (e.g., "Average Daily Humidity (SQL)") and choose a collection (e.g., "Weather Dashboard Examples").
+
+**SQL Query:**
+
+```sql
+SELECT
+    CAST(time AS DATE) AS "Forecast Date",  -- Extracts just the date part for daily grouping
+    AVG(humidity_percentage) AS "Average Humidity"
+FROM
+    hourly_weather_forecast
+GROUP BY
+    CAST(time AS DATE)
+ORDER BY
+    CAST(time AS DATE) ASC;
+```
+<img src="https://ibb.co/przD7gf5" alt="Average Daily Humidity" style="max-width: 100%; height: auto;">
+
+#### 3. Daily Weather Averages Overview
+
+This table provides a daily summary of key weather metrics, displaying the average temperature, humidity, wind speed, precipitation, and cloud cover for each day in the forecast.
+
+**How to create this chart in Metabase:**
+
+1.  **Start a New Native Query:** (Follow steps 1-2 from "Average Hourly Temperature Cycle" above).
+2.  **Paste and Run SQL:**
+    * Copy the SQL query provided below and paste it into the Native Query editor.
+    * Click the **"Visualize"** button in the bottom left to run the query.
+3.  **Configure Chart Type and Settings:**
+    * After the query runs, Metabase will automatically display the results as a **"Table"**. This is the intended chart type for this aggregated overview.
+    * You can adjust column visibility or formatting in the **Chart Settings panel** (paint roller icon on the right sidebar) if desired.
+4.  **Save Your Question:**
+    * Click **"Save"** in the top right.
+    * Give it a name (e.g., "Daily Weather Averages Overview (SQL)") and choose a collection (e.g., "Weather Dashboard Examples").
+
+**SQL Query:**
+
+```sql
+SELECT
+    CAST(time AS DATE) AS "Forecast Date", -- Group by the date
+    AVG(temp_c) AS "Average Temperature (C)",
+    AVG(humidity) AS "Average Humidity (%)",
+    AVG(wind_kph) AS "Average Wind Speed (kph)",
+    AVG(precip_mm) AS "Average Daily Precipitation (mm)", -- Average of hourly precipitation for the day
+    AVG(cloud) AS "Average Cloud Cover (%)"
+FROM
+    hourly_weather_forecast
+GROUP BY
+    CAST(time AS DATE)
+ORDER BY
+    CAST(time AS DATE) ASC;
+```
+<img src="https://ibb.co/cSM3RzBQ" alt="Daily Weather Averages Overview" style="max-width: 100%; height: auto;">
+
+---
+
+### Comprehensive Weather Dashboard
+
+All individual charts have been combined into a single, interactive dashboard in Metabase. This dashboard provides a holistic and easily digestible view of the weather forecast data, allowing for quick insights into daily and hourly patterns. It can be further enhanced with filters (e.g., by date range) to enable more dynamic data exploration.
+
+**How to create this dashboard in Metabase:**
+
+1.  **Go to the Metabase Homepage:** Open your web browser and navigate to `http://localhost:3000`.
+2.  **Start a New Dashboard:**
+    * Click the **"+" icon** in the top right corner of the Metabase interface.
+    * Select **"New dashboard"** from the dropdown menu.
+3.  **Name Your Dashboard:**
+    * Give your dashboard a descriptive name (e.g., "Caracas Weather Forecast Dashboard").
+    * Click **"Create"**.
+4.  **Add Your Saved Questions (Charts) to the Dashboard:**
+    * Once the new, empty dashboard appears, click the **"Add a question"** button or the **"+" icon** (usually in the top right while in edit mode).
+    * A sidebar will open showing all your saved questions. Select the ones you've created (e.g., "Average Hourly Temperature Cycle (SQL)", "Average Daily Humidity (SQL)", "Daily Weather Averages Overview (SQL)").
+5.  **Arrange and Resize Widgets:**
+    * While in "editing" mode (you'll see a pencil icon or "Done editing" button), click and drag the corners or edges of each chart to resize them.
+    * Click and drag the charts themselves to rearrange their positions on the dashboard for an optimal layout.
+6.  **Save the Dashboard:**
+    * When you're satisfied with the layout, click the **"Done editing"** button (usually in the top right corner of the dashboard).
+
+<img src="https://ibb.co/YFCzXgJk" alt="Comprehensive Weather Dashboard" style="max-width: 100%; height: auto;"/>
+
 ## Next Steps
 
 Here are some potential enhancements and future considerations for this project:
 
 * **Scheduling:** Implement a scheduler (e.g., using Cron, Airflow, or a Docker-native scheduling tool) to automate the daily execution of the pipeline.
-* **Data Analysis & Visualization:** Connect a business intelligence (BI) tool (e.g., Grafana, Metabase, Tableau) or create Python scripts to analyze and visualize the stored weather data.
 * **Error Handling & Monitoring:** Enhance error handling, add logging to external services, and set up monitoring for pipeline health.
 * **Additional Data Sources:** Integrate data from other weather APIs or sources to enrich the dataset.
 * **Data Deduplication/Upsert:** Implement more sophisticated logic for handling duplicate entries or updating existing records based on unique keys, instead of just appending.

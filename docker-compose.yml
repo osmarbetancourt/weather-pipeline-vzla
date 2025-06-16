@@ -29,6 +29,23 @@ services:
       - db_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-      
+
+  metabase: # This is the new service
+    image: metabase/metabase:latest
+    ports:
+      - "3000:3000" # Access Metabase on http://localhost:3000
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_HOST: db
+      MB_DB_PORT: 5432
+      MB_DB_DBNAME: ${PG_DB}
+      MB_DB_USER: ${PG_USER}
+      MB_DB_PASS: ${PG_PASSWORD}
+    depends_on:
+      - db
+    volumes:
+      - metabase_data:/metabase-data # Persist Metabase's internal data   
+
 volumes:
   db_data:
+  metabase_data:
