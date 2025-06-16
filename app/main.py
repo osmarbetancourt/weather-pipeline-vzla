@@ -1,9 +1,23 @@
-# app/main.py
+import requests
+import os
+from dotenv import load_dotenv
 
-import sys
+load_dotenv()
 
-print("Hello from inside the Docker container!")
-print(f"Python version: {sys.version}")
+# Enviroment variables
+api_key = os.getenv("WEATHER_API_KEY")
+city = os.getenv("TARGET_CITY")
+forecast_days = os.getenv("FORECAST_DAYS")
+api_url = "https://api.weatherapi.com/v1/forecast.json"
 
-if __name__ == "__main__":
-    print("It works")
+params = {
+    "key":api_key,
+    "q":city,
+    "days":forecast_days,
+    "alerts":"no",
+    "aqi":"no"
+}
+
+forecast_response = requests.get(url=api_url,params=params)
+
+print(forecast_response.json())
