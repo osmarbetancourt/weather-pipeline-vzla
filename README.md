@@ -209,7 +209,7 @@ This visualization shows the average humidity for each day across the forecast p
 ```sql
 SELECT
     CAST(time AS DATE) AS "Forecast Date",  -- Extracts just the date part for daily grouping
-    AVG(humidity_percentage) AS "Average Humidity"
+    AVG(humidity) AS "Average Humidity"
 FROM
     hourly_weather_forecast
 GROUP BY
@@ -241,11 +241,11 @@ This table provides a daily summary of key weather metrics, displaying the avera
 ```sql
 SELECT
     CAST(time AS DATE) AS "Forecast Date", -- Group by the date
-    AVG(temp_c) AS "Average Temperature (C)",
-    AVG(humidity) AS "Average Humidity (%)",
-    AVG(wind_kph) AS "Average Wind Speed (kph)",
-    AVG(precip_mm) AS "Average Daily Precipitation (mm)", -- Average of hourly precipitation for the day
-    AVG(cloud) AS "Average Cloud Cover (%)"
+    AVG(temp_c) AS "Avg Temperature (C)",
+    AVG(humidity) AS "Avg Humidity (%)",
+    AVG(wind_kph) AS "Avg Wind Speed (kph)",
+    AVG(precip_mm) AS "Avg Daily Precipitation (mm)", 
+    AVG(cloud) AS "Avg Cloud Cover (%)"
 FROM
     hourly_weather_forecast
 GROUP BY
